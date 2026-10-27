@@ -70,10 +70,10 @@ def running():
         if circ_y_loc == height:
             circ_y_loc = 1
 
-        body_x, body_y = coordinate_conversion(body_position)
-
+        new_x, new_y = coordinate_conversion(body_position)
+        body_x, body_y = int(new_x), int(new_y)
         screen.fill("salmon")
-        pygame.draw.circle(screen, "black", (int(body_x), int(body_y)), radius)
+        pygame.draw.circle(screen, "black", (body_x, body_y), radius)
 
         pygame.display.update()
 
@@ -82,7 +82,9 @@ def physics(radius, circ_x_loc, circ_y_loc):
     Gives us the stuff needed for physics.
 
     Input:
-    None
+    radius (float)
+    circ_x_loc (float)
+    circ_y_loc (float)
 
     Output:
     body_position (tuple)
@@ -100,7 +102,7 @@ def physics(radius, circ_x_loc, circ_y_loc):
 
     #setting attributes...
     shape.density = 1
-    space.gravity = 0, -1000
+    space.gravity = 0, 100
     return body_position
 
 def coordinate_conversion(point):
