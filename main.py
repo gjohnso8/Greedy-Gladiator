@@ -1,29 +1,18 @@
+#pygame is imported primarily for visual aspects,
 import pygame
 import sys
+#pymunk is for the pyhsics
+import pymunk
 
-def settings():
-    '''
-    Sets all game parameters.
-
-    Input:
-    None
-
-    Output:
-    width (int)
-    height (int)
-    screen
-    caption
-
-    :return:
-    '''
-    width = 1800
-    height = 1000
-    screen = pygame.display.set_mode((width, height))
-    caption = pygame.display.set_caption("Greedy Gladiator")
-    return width, height, screen, caption
-
-width, height, screen, caption = settings()
 pygame.init()
+
+width = 1800
+height = 1000
+screen = pygame.display.set_mode((width, height))
+caption = pygame.display.set_caption("Greedy Gladiator")
+
+clock = pygame.time.Clock()
+fps = 60
 
 def running():
     '''
@@ -44,6 +33,8 @@ def running():
     while done == 1:
         events = pygame.event.get()
         w,a,s,d = movement()
+        #this sets  the framerate at whatever fps is set to
+        #clock.tick(fps)
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -52,10 +43,13 @@ def running():
 
 
 
-        #speed = dist that circle moves each frame when wasd used
+        #speed = dist that circle moves each frame when wasd is used
         speed = 0.5
         horiz = 0
         vert = 0
+        radius = 25
+
+        body_position = physics(radius, circ_x_loc, circ_y_loc)
         #sets new location of circle based on key input
         if w:
             vert = -speed
@@ -80,9 +74,31 @@ def running():
             circ_y_loc = 1
 
         screen.fill("salmon")
-        pygame.draw.circle(screen, "black", (circ_x_loc, circ_y_loc), 25)
+        pygame.draw.circle(screen, "black", body_position, radius)
 
         pygame.display.update()
+
+def physics(radius, circ_x_loc, circ_y_loc):
+    '''
+    Gives us the stuff needed for physics.
+
+    Input:
+    None
+
+    Output:
+    space
+
+    :return:
+    '''
+    #this holds any objects that are wanted in the physics simulation
+    space = pymunk.Space()
+
+    body = pymunk.Body()
+    body_position = circ_x_loc, circ_y_loc
+    shape = pymunk.Circle(body, radius)
+    space.add(body, shape)
+    return body_position
+
 
 def movement():
     '''
