@@ -10,12 +10,12 @@ width = 1800
 height = 1000
 screen = pygame.display.set_mode((width, height))
 caption = pygame.display.set_caption("Greedy Gladiator")
-
-clock = pygame.time.Clock()
 fps = 60
 
+clock = pygame.time.Clock()
+
 def running():
-    '''
+    """
     This function runs the game in active time.
 
     Input:
@@ -23,28 +23,25 @@ def running():
 
     Output:
     None
-    '''
+    """
     #setting variables to be changed
-    done = 1
-
     circ_x_loc = (width / 2)
     circ_y_loc = (height / 2)
 
-    while done == 1:
+    while True:
         events = pygame.event.get()
         w,a,s,d = movement()
         #this sets  the framerate at whatever fps is set to
-        #clock.tick(fps)
+        clock.tick(fps)
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-                done = 0
 
 
 
         #speed = dist that circle moves each frame when wasd is used
-        speed = 1
+        speed = 3
         horiz = 0
         vert = 0
         radius = 25
@@ -81,19 +78,20 @@ def running():
         pygame.display.update()
 
 def physics(radius, circ_x_loc, circ_y_loc):
-    '''
+    """
     Gives us the stuff needed for physics.
 
     Input:
     None
 
     Output:
-    space
-
-    :return:
-    '''
-    #this holds any objects that are wanted in the physics simulation
+    body_position (tuple)
+    """
+    # this holds any objects that are wanted in the physics simulation
     space = pymunk.Space()
+
+    # velocities depend on step size to update position of object
+    space.step(1 / fps)
 
     body = pymunk.Body()
     body_position = circ_x_loc, circ_y_loc
@@ -106,7 +104,7 @@ def physics(radius, circ_x_loc, circ_y_loc):
     return body_position
 
 def coordinate_conversion(point):
-    '''
+    """
     Returns a version of a point on a 2D plane so that the y-value is the opposite.
     This is done because pygame defines (0,0) at the top left of the screen,
     while pymunk defines it at the bottom left. This will fix this mismatch.
@@ -117,13 +115,13 @@ def coordinate_conversion(point):
     Output:
     new_x (float)
     new_y (float)
-    '''
+    """
     new_x = point[0]
     new_y = height-point[1]
     return new_x, new_y
 
 def movement():
-    '''
+    """
     This function checks to see if the user is actively pressing any wasd keys or not.
     Input:
     None
@@ -133,7 +131,7 @@ def movement():
     active_a (boolean)
     active_s (boolean)
     active_d (boolean)
-    '''
+    """
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         active_w = True
