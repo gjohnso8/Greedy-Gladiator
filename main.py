@@ -44,7 +44,7 @@ def running():
 
 
         #speed = dist that circle moves each frame when wasd is used
-        speed = 0.5
+        speed = 1
         horiz = 0
         vert = 0
         radius = 25
@@ -52,11 +52,11 @@ def running():
         body_position = physics(radius, circ_x_loc, circ_y_loc)
         #sets new location of circle based on key input
         if w:
-            vert = -speed
+            vert = speed
         if a:
             horiz = -speed
         if s:
-            vert = speed
+            vert = -speed
         if d:
             horiz = speed
 
@@ -73,8 +73,10 @@ def running():
         if circ_y_loc == height:
             circ_y_loc = 1
 
+        body_x, body_y = coordinate_conversion(body_position)
+
         screen.fill("salmon")
-        pygame.draw.circle(screen, "black", body_position, radius)
+        pygame.draw.circle(screen, "black", (int(body_x), int(body_y)), radius)
 
         pygame.display.update()
 
@@ -97,8 +99,28 @@ def physics(radius, circ_x_loc, circ_y_loc):
     body_position = circ_x_loc, circ_y_loc
     shape = pymunk.Circle(body, radius)
     space.add(body, shape)
+
+    #setting attributes...
+    shape.density = 1
+    space.gravity = 0, -1000
     return body_position
 
+def coordinate_conversion(point):
+    '''
+    Returns a version of a point on a 2D plane so that the y-value is the opposite.
+    This is done because pygame defines (0,0) at the top left of the screen,
+    while pymunk defines it at the bottom left. This will fix this mismatch.
+
+    Input:
+    point (tuple)
+
+    Output:
+    new_x (float)
+    new_y (float)
+    '''
+    new_x = point[0]
+    new_y = height-point[1]
+    return new_x, new_y
 
 def movement():
     '''
